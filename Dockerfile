@@ -23,8 +23,8 @@ RUN ["bin/bash", "-c", "sed -i 's/memory_limit\\s*=.*/memory_limit=512M/g' /etc/
 
 RUN echo always_populate_raw_post_data=-1 >> /etc/php5/apache2/php.ini
 
-#configure apache
-RUN ["bin/bash", "-c", "sed -i 's/AllowOverride None/AllowOverride All\\nSetEnvIf X-Forwarded-Proto https HTTPS=on/g' /etc/apache2/apache2.conf"]
+#configure apache vhost default
+RUN ["bin/bash", "-c", "sed -i 's/AllowOverride None/AllowOverride All\\nSetEnvIf X-Forwarded-Proto https HTTPS=on/g' /etc/apache2/sites-available/default"]
 
 # Override Default web root
 RUN ["bin/bash", "-c", "sed -i 's/DocumentRoot \\/var\\/www/DocumentRoot \\/var\\/www\\/html/g' /etc/apache2/sites-available/default"]
