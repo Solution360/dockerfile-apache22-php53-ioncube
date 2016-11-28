@@ -1,7 +1,6 @@
 FROM ubuntu:12.04
 
-# install apache2 and old php
-
+# install wget, curl, unzip, apache2 and old php
 RUN apt-get update && \
     apt-get install -y \
       wget \
@@ -17,9 +16,9 @@ RUN apt-get update && \
       php5-pgsql \
       php5-curl
 
-#configure php
+#configure php execution time, memory limit and upload size
 RUN ["bin/bash", "-c", "sed -i 's/max_execution_time\\s*=.*/max_execution_time=180/g' /etc/php5/apache2/php.ini"]
-RUN ["bin/bash", "-c", "sed -i 's/upload_max_filesize\\s*=.*/upload_max_filesize=16M/g' /etc/php5/apache2/php.ini"]
+RUN ["bin/bash", "-c", "sed -i 's/upload_max_filesize\\s*=.*/upload_max_filesize=2G/g' /etc/php5/apache2/php.ini"]
 RUN ["bin/bash", "-c", "sed -i 's/memory_limit\\s*=.*/memory_limit=512M/g' /etc/php5/apache2/php.ini"]
 
 RUN echo always_populate_raw_post_data=-1 >> /etc/php5/apache2/php.ini
