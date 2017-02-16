@@ -14,7 +14,8 @@ RUN apt-get update && \
       php5-ldap \
       php5-mysql \
       php5-pgsql \
-      php5-curl
+      php5-curl \
+      php5-xdebug
 
 #configure php execution time, memory limit and upload size
 RUN ["bin/bash", "-c", "sed -i 's/max_execution_time\\s*=.*/max_execution_time=180/g' /etc/php5/apache2/php.ini"]
@@ -29,7 +30,8 @@ RUN ["bin/bash", "-c", "sed -i 's/AllowOverride None/AllowOverride All\\nSetEnvI
 # Override Default web root
 RUN ["bin/bash", "-c", "sed -i 's/DocumentRoot \\/var\\/www/DocumentRoot \\/var\\/www\\/html/g' /etc/apache2/sites-available/default"]
 RUN ["bin/bash", "-c", "sed -i 's/Directory \\/var\\/www/Directory \\/var\\/www\\/html/g' /etc/apache2/sites-available/default"]
-
+RUN ["bin/bash", "-c", "sed -i 's/DocumentRoot \\/var\\/www/DocumentRoot \\/var\\/www\\/html/g' /etc/apache2/sites-available/default-ssl"]
+RUN ["bin/bash", "-c", "sed -i 's/Directory \\/var\\/www/Directory \\/var\\/www\\/html/g' /etc/apache2/sites-available/default-ssl"]
 
 #configure XDebug
 RUN echo [XDebug] >> /etc/php5/apache2/php.ini
@@ -50,10 +52,12 @@ RUN a2enmod rewrite
 RUN a2enmod ssl
 RUN a2enmod proxy
 RUN a2enmod headers
+RUN a2ensite default-ssl
 RUN chown -R www-data:www-data /var/www
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
+RUN service apache2 restart
 
 EXPOSE 80
 EXPOSE 443
